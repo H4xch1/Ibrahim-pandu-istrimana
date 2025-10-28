@@ -1,6 +1,6 @@
 <?php// Konfigurasi koneksi ke database$host = "localhost";
 // Konfigurasi koneksi ke database
-$host = "localhost";    // server database (biasanya localhost)
+$host = "127.0.0.1";    // server database (biasanya localhost)
 $user = "root";         // username MySQL (default: root)
 $pass = "";             // password MySQL (kosong di XAMPP)
 $db   = "biodata_db";   // nama database kamu
