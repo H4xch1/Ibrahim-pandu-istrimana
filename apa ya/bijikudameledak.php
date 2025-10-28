@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'Config.php';
 
 $msg = '';
 // If POST: insert or update
@@ -73,7 +73,7 @@ if (!empty($_GET['search'])) {
 }
 
 // For convenience, fetch some latest rows to display
-$latest = $pdo->query("SELECT id, nama FROM biodata ORDER BY id DESC LIMIT 10")->fetchAll();
+$latest = $pdo->query("SELECT id, nama FROM biodata_db ORDER BY id DESC LIMIT 10")->fetchAll();
 
 ?>
 <!doctype html>
