@@ -1,15 +1,17 @@
-<?php// Konfigurasi koneksi ke database$host = "localhost";
-// Konfigurasi koneksi ke database
-$host = "127.0.0.1";    // server database (biasanya localhost)
-$user = "root";         // username MySQL (default: root)
-$pass = "";             // password MySQL (kosong di XAMPP)
-$db   = "biodata_db";   // nama database kamu
+<?php
+$host = '127.0.0.1';
+$db   = 'biodata_db';
+$user = 'root';
+$pass = ''; 
+$dsn  = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 
-// Membuat koneksi
-$koneksi = mysqli_connect($host, $user, $pass, $db);
+$options = [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+];
 
-// Cek koneksi
-if (!$koneksi) {
-    die("Koneksi gagal: " . mysqli_connect_error());
+try {
+    $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
 }
-?>

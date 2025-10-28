@@ -2,17 +2,13 @@
 require 'Config.php';
 
 $msg = '';
-// If POST: insert or update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // sanitize/trim inputs
     $id = isset($_POST['id']) && $_POST['id'] !== '' ? intval($_POST['id']) : null;
     $nama = trim($_POST['nama'] ?? '');
-    $ttl = !empty($_POST['tempat_tanggal_lahir']) ? $_POST['tempat_tanggal_lahir'] : null; // yyyy-mm-dd
-    $alamat = trim($_POST['alamat'] ?? '');
+    $ttl = !empty($_POST['tempat_tanggal_lahir']) ? $_POST['tempat_tanggal_lahir'] : null; 
     $no_telp = trim($_POST['no_telp'] ?? '');
     $jenis_kelamin = $_POST['jenis_kelamin'] ?? null;
     $agama = $_POST['agama'] ?? null;
-    // hobi: array -> join
     $hobi = '';
     if (!empty($_POST['hobi']) && is_array($_POST['hobi'])) {
         $hobi = implode(',', array_map('trim', $_POST['hobi']));
@@ -22,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = "Nama wajib diisi.";
     } else {
         if ($id) {
-            // update
             $sql = "UPDATE biodata SET nama = :nama, tempat_tanggal_lahir = :ttl, alamat = :alamat, no_telp = :no_telp, jenis_kelamin = :jk, agama = :agama, hobi = :hobi WHERE id = :id";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
@@ -37,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
             $msg = "Data updated (ID: $id).";
         } else {
-            // insert
             $sql = "INSERT INTO biodata (nama, tempat_tanggal_lahir, alamat, no_telp, jenis_kelamin, agama, hobi) VALUES (:nama, :ttl, :alamat, :no_telp, :jk, :agama, :hobi)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
@@ -54,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// If GET id -> load record for autofill
 $record = null;
 if (!empty($_GET['id'])) {
     $id = intval($_GET['id']);
@@ -63,7 +56,6 @@ if (!empty($_GET['id'])) {
     $record = $stmt->fetch();
 }
 
-// If search request
 $searchResults = [];
 if (!empty($_GET['search'])) {
     $q = trim($_GET['search']);
@@ -72,7 +64,6 @@ if (!empty($_GET['search'])) {
     $searchResults = $stmt->fetchAll();
 }
 
-// For convenience, fetch some latest rows to display
 $latest = $pdo->query("SELECT id, nama FROM biodata_db ORDER BY id DESC LIMIT 10")->fetchAll();
 
 ?>
@@ -82,7 +73,6 @@ $latest = $pdo->query("SELECT id, nama FROM biodata_db ORDER BY id DESC LIMIT 10
 <meta charset="utf-8">
 <title>Form Input Biodata</title>
 <style>
-/* minimal styles to look tidy */
 .container { width: 760px; margin: 30px auto; border: 1px solid #333; padding: 18px; font-family: Arial; }
 h1 { text-align:center; margin:0 0 12px; }
 .form-row { margin: 8px 0; }
@@ -105,7 +95,6 @@ a.id-link { margin-right: 8px; text-decoration:none; }
 <?php endif; ?>
 
 <form method="post" action="">
-  <!-- id hidden to support update -->
   <input type="hidden" name="id" value="<?= $record ? htmlspecialchars($record['id']) : '' ?>">
 
   <div class="form-row">
