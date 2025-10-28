@@ -5,8 +5,9 @@ $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = isset($_POST['id']) && $_POST['id'] !== '' ? intval($_POST['id']) : null;
     $nama = trim($_POST['nama'] ?? '');
-    $ttl = !empty($_POST['tempat_tanggal_lahir']) ? $_POST['tempat_tanggal_lahir'] : null; 
-    $no_telp = trim($_POST['no_telp'] ?? '');
+    $ttl = !empty($_POST['tanggal_lahir']) ? $_POST['tanggal_lahir'] : null; 
+    $alamat = trim($_POST['alamat'] ?? '');
+    $no_telp = trim($_POST['no_hp'] ?? '');
     $jenis_kelamin = $_POST['jenis_kelamin'] ?? null;
     $agama = $_POST['agama'] ?? null;
     $hobi = '';
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = "Nama wajib diisi.";
     } else {
         if ($id) {
-            $sql = "UPDATE biodata SET nama = :nama, tempat_tanggal_lahir = :ttl, alamat = :alamat, no_telp = :no_telp, jenis_kelamin = :jk, agama = :agama, hobi = :hobi WHERE id = :id";
+            $sql = "UPDATE biodata SET nama = :nama, tanggal_lahir = :ttl, alamat = :alamat, no_hp = :no_telp, jenis_kelamin = :jk, agama = :agama, hobi = :hobi WHERE id = :id";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':nama' => $nama,
@@ -32,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
             $msg = "Data updated (ID: $id).";
         } else {
-            $sql = "INSERT INTO biodata (nama, tempat_tanggal_lahir, alamat, no_telp, jenis_kelamin, agama, hobi) VALUES (:nama, :ttl, :alamat, :no_telp, :jk, :agama, :hobi)";
+            $sql = "INSERT INTO biodata (nama, tanggal_lahir, alamat, no_hp, jenis_kelamin, agama, hobi) VALUES (:nama, :ttl, :alamat, :no_telp, :jk, :agama, :hobi)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':nama' => $nama,
@@ -59,12 +60,12 @@ if (!empty($_GET['id'])) {
 $searchResults = [];
 if (!empty($_GET['search'])) {
     $q = trim($_GET['search']);
-    $stmt = $pdo->prepare("SELECT id, nama, tempat_tanggal_lahir FROM biodata WHERE nama LIKE :q ORDER BY id DESC LIMIT 50");
+    $stmt = $pdo->prepare("SELECT id, nama, tanggal_lahir FROM biodata WHERE nama LIKE :q ORDER BY id DESC LIMIT 50");
     $stmt->execute([':q' => "%$q%"]);
     $searchResults = $stmt->fetchAll();
 }
 
-$latest = $pdo->query("SELECT id, nama FROM biodata_db ORDER BY id DESC LIMIT 10")->fetchAll();
+$latest = $pdo->query("SELECT id, nama FROM biodata ORDER BY id DESC LIMIT 10")->fetchAll();
 
 ?>
 <!doctype html>
@@ -103,8 +104,8 @@ a.id-link { margin-right: 8px; text-decoration:none; }
   </div>
 
   <div class="form-row">
-    <label>Tempat, Tanggal Lahir</label>
-    <input type="date" name="tempat_tanggal_lahir" value="<?= $record && $record['tempat_tanggal_lahir'] ? htmlspecialchars($record['tempat_tanggal_lahir']) : '' ?>">
+    <label>Tanggal Lahir</label>
+    <input type="date" name="tanggal_lahir" value="<?= $record && $record['tanggal_lahir'] ? htmlspecialchars($record['tanggal_lahir']) : '' ?>">
   </div>
 
   <div class="form-row">
@@ -114,7 +115,7 @@ a.id-link { margin-right: 8px; text-decoration:none; }
 
   <div class="form-row">
     <label>No.Telp/HP</label>
-    <input type="text" name="no_telp" value="<?= $record ? htmlspecialchars($record['no_telp']) : '' ?>">
+    <input type="text" name="no_hp" value="<?= $record ? htmlspecialchars($record['no_hp']) : '' ?>">
   </div>
 
   <div class="form-row">
@@ -172,7 +173,7 @@ a.id-link { margin-right: 8px; text-decoration:none; }
     <?php foreach ($searchResults as $r): ?>
       <li>
         <a class="id-link" href="?id=<?= $r['id'] ?>"><?= $r['id'] ?></a>
-        <?= htmlspecialchars($r['nama']) ?> (<?= htmlspecialchars($r['tempat_tanggal_lahir']) ?>)
+        <?= htmlspecialchars($r['nama']) ?> (<?= htmlspecialchars($r['tanggal_lahir']) ?>)
       </li>
     <?php endforeach; ?>
   </ul>
